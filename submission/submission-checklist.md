@@ -1,0 +1,27 @@
+# Submission Checklist
+
+- [x] Application created
+- [x] Distinct visual system created
+- [x] Homepage complete
+- [x] Guest demo complete
+- [x] Twin onboarding complete
+- [x] Career Time Machine functional
+- [x] Career Physics constraints functional
+- [x] Future Shock Lab functional
+- [x] Path Race functional
+- [x] Evidence Graph functional
+- [x] Proof Missions functional
+- [x] Copy Codex Build Brief functional
+- [x] Twin Council fallback functional
+- [x] Future Self fallback functional
+- [x] Decision Journal functional
+- [x] Career Replay functional
+- [x] Local simulation fallback functional
+- [x] AI server integration prepared
+- [x] Data adapters implemented
+- [x] Security pass complete
+- [x] Responsive pass covered by Playwright projects
+- [x] Final verification complete
+- [ ] GitHub pushed
+- [ ] Netlify production deployed
+- [ ] Production URL stored

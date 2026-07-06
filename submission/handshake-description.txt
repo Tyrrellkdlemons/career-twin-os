@@ -1,0 +1,1 @@
+CareerTwin OS is an AI-powered career simulation engine that models multiple possible professional futures instead of giving one generic recommendation. It maps skills and evidence, calculates paths around real constraints like time and cost, simulates career shocks, runs multi-agent strategy debates, and turns gaps into portfolio proof missions users can build and show.

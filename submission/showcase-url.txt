@@ -1,1 +1,1 @@
-Pending Netlify deployment.
+https://careertwin-os.netlify.app/?showcase=1

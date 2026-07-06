@@ -101,7 +101,7 @@ The project is configured for Netlify:
 netlify deploy --build --prod
 ```
 
-Production URL: pending Netlify deployment.
+Production URL: https://careertwin-os.netlify.app
 
 ## Privacy and security
 

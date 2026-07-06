@@ -41,6 +41,7 @@
 
 ## Remaining
 
-- Push to GitHub.
-- Deploy to Netlify production.
-- Verify production routes.
+- Production URL written to submission files.
+- GitHub repository pushed.
+- Netlify production deployed.
+- Production routes verified.

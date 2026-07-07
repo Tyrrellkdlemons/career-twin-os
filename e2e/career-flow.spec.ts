@@ -69,5 +69,5 @@ test("API Finder surfaces open and official data sources", async ({ page }) => {
   await page.getByRole("button", { name: /no-key only/i }).click();
   await page.getByRole("button", { name: /^Research$/i }).click();
   await page.getByLabel(/search apis/i).fill("education research");
-  await expect(page.getByText(/OpenAlex API/i)).toBeVisible();
+  await expect(page.getByRole("heading", { name: /OpenAlex API/i })).toBeVisible();
 });

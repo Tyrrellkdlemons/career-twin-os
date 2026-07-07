@@ -11,7 +11,7 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
-    "e2e": "playwright test",
+    "e2e": "playwright test --grep-invert \"capture production showcase preview\"",
     "capture:showcase": "playwright test e2e/showcase-capture.spec.ts --project=chromium",
     "verify": "npm run lint && npm run typecheck && npm test && npm run build && npm run e2e"
   },

@@ -34,14 +34,15 @@ Most career tools optimize for static advice: resumes, job matches, generic cour
 
 ## How AI is used
 
-The application is useful without AI credentials. Local Simulation Mode uses deterministic scoring, route planning, mission generation, Twin Council responses, and Future Self reflections. The Netlify AI function upgrades responses when `OPENAI_API_KEY` is configured server-side and uses the OpenAI Responses API.
+The application is useful without private AI credentials. In production, the Netlify market function runs a Public Data Router that enriches routes with GitHub, OpenAlex, World Bank, and Data.gov signals. The Netlify AI function returns public-data assisted guidance when `OPENAI_API_KEY` is absent, and uses the OpenAI Responses API as an optional higher-reasoning layer when the key is configured server-side.
 
 ## Simulation architecture
 
 1. Structured occupation and skill data.
 2. Deterministic readiness, constraint, and route scoring.
 3. Seeded scenario simulation and shock recalculation.
-4. Optional AI interpretation through a server-side Netlify function.
+4. Public-data enrichment through a server-side Netlify function.
+5. Optional OpenAI interpretation through a server-side Netlify function.
 
 ## Data sources
 
@@ -56,7 +57,7 @@ Official-source adapters are prepared for:
 - USAJOBS API: https://developer.usajobs.gov/api-reference/
 - Data.gov CKAN API: https://catalog.data.gov/dataset/data-gov-ckan-api
 
-Live enrichment is intentionally server-side. The browser never receives O*NET, BLS, or OpenAI secrets.
+Live enrichment is intentionally server-side. The browser calls `/api/market`; the function calls public APIs and keeps optional O*NET, BLS, and OpenAI secrets out of browser-visible code.
 
 ## Technical architecture
 
@@ -116,7 +117,7 @@ Career data is sensitive. The app supports guest mode, data export, delete/reloa
 
 ## Known limitations
 
-- Market data enrichment is prepared but falls back locally unless server credentials and exact BLS series choices are configured.
+- Public market enrichment uses context signals, not salary promises or hiring guarantees.
 - Future Self is a reflective simulation, not a prediction.
 - Salary and employment outcomes are not guaranteed or represented with fake precision.
 

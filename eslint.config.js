@@ -23,7 +23,18 @@ export default tseslint.config(
     languageOptions: {
       globals: {
         process: "readonly",
-        fetch: "readonly"
+        fetch: "readonly",
+        AbortController: "readonly",
+        setTimeout: "readonly",
+        clearTimeout: "readonly"
+      }
+    }
+  },
+  {
+    files: ["tests/**/*.test.mjs"],
+    languageOptions: {
+      globals: {
+        process: "readonly"
       }
     }
   }

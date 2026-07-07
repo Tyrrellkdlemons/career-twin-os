@@ -144,7 +144,9 @@ a {
 }
 
 .brand strong,
-.brand small {
+.brand small,
+.mode-panel strong,
+.mode-panel span {
   display: block;
 }
 
@@ -835,6 +837,62 @@ details summary {
 
 .api-flow {
   animation-duration: 1.8s;
+}
+
+.public-data-status {
+  display: grid;
+  gap: 12px;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+}
+
+.public-data-status p,
+.public-data-status small {
+  margin: 0;
+  color: var(--muted);
+}
+
+.signal-meter {
+  overflow: hidden;
+  height: 8px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.signal-meter span {
+  display: block;
+  height: 100%;
+  max-width: 100%;
+  background: linear-gradient(90deg, var(--teal), var(--gold));
+  animation: meterFlow 2.6s ease-in-out infinite;
+}
+
+.source-status-list {
+  display: grid;
+  gap: 8px;
+}
+
+.source-status-row {
+  display: grid;
+  gap: 4px;
+  padding: 10px 0 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.source-status-row strong {
+  color: var(--text);
+  font-size: 0.85rem;
+}
+
+.source-status-row span {
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+.source-status-row.live strong {
+  color: var(--teal);
 }
 
 .api-grid {

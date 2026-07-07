@@ -56,8 +56,8 @@ export function generateTwinCouncil(profile: CareerProfile, route: CareerRoute):
       agent: "THE MARKET ANALYST",
       recommendation: `Favor evidence that maps to ${role.family.toLowerCase()} requirements.`,
       reasons: [
-        `The local model gives this target a market signal of ${route.score.marketSignal}/100.`,
-        "Official O*NET and BLS adapters are prepared for live data when credentials and series choices are available."
+        `The base route model gives this target a market signal of ${route.score.marketSignal}/100.`,
+        "The deployed public-data router adds GitHub, OpenAlex, World Bank, and Data.gov context before optional OpenAI interpretation."
       ],
       risks: ["Market conditions can change faster than a static model can represent."],
       assumptions: ["Market data is treated as context, not a hiring guarantee."],

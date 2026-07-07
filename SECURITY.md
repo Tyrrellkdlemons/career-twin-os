@@ -9,13 +9,13 @@ CareerTwin OS handles sensitive career data, draft resume text, public repositor
 - Never commit `.env`, `.env.local`, API keys, service-role keys, GitHub tokens, or Netlify tokens.
 - Server secrets stay in Netlify environment variables.
 - Browser-visible variables must not contain secrets.
-- OpenAI, O*NET, and BLS credentials are used only from Netlify Functions.
+- OpenAI, O*NET, and BLS credentials are used only from Netlify Functions. Public GitHub, OpenAlex, World Bank, and Data.gov enrichment also runs through Netlify Functions.
 
 ## Supported data flows
 
 - Demo profile and deterministic simulation run in the browser.
-- Optional AI calls go through `/api/ai`, which maps to a Netlify Function.
-- Optional market calls go through `/api/market`, which maps to a Netlify Function.
+- AI calls go through `/api/ai`, which maps to a Netlify Function and can return public-data assisted guidance without OpenAI credentials.
+- Market calls go through `/api/market`, which maps to a Netlify Function and calls public source APIs server-side.
 - GitHub evidence inspection accepts only `https://github.com/owner/repo` URL shapes.
 
 ## Controls implemented
@@ -27,7 +27,7 @@ CareerTwin OS handles sensitive career data, draft resume text, public repositor
 - No arbitrary server-side repository code execution.
 - Netlify security headers.
 - SPA fallback configured after function redirects.
-- Local fallback when credentials are absent.
+- Public-data degraded/offline statuses when a source times out.
 
 ## Known limitations
 

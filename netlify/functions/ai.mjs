@@ -1,3 +1,5 @@
+import { publicDataResponse } from "./market.mjs";
+
 const jsonHeaders = {
   "content-type": "application/json; charset=utf-8",
   "cache-control": "no-store"
@@ -15,18 +17,28 @@ function truncate(value, limit = 6000) {
   return String(value ?? "").slice(0, limit);
 }
 
-function fallback(payload) {
+async function fallback(payload) {
   const route = payload?.route?.title ?? "selected route";
+  const roleId = payload?.route?.targetRole ?? "cloud-engineer";
+  const publicData = await publicDataResponse(roleId);
+  const liveSources = publicData.sources.filter((source) => source.status === "live").map((source) => source.name);
+  const sourceSummary = liveSources.length ? liveSources.join(", ") : "the public-data router";
+
   return {
-    mode: "LOCAL_SIMULATION_MODE",
-    text: `Local simulation response: focus this week on one proof artifact for ${route}. Keep claims tied to evidence, write assumptions down, and review the path after the next milestone.`,
+    mode: "PUBLIC_DATA_ASSISTED_MODE",
+    text: `Public-data assisted response: focus this week on one proof artifact for ${route}. Ground the next decision against ${sourceSummary}, keep claims tied to evidence, and review the path after the next milestone.`,
     structured: {
       recommendation: "Build inspectable evidence before adding another generic credential.",
-      reasons: ["Fallback mode uses deterministic product rules.", "No server-side OpenAI key is available."],
-      risks: ["Advice is less personalized than AI-enhanced mode."],
-      assumptions: ["Profile and route data were supplied by the client."],
-      confidence: "moderate"
-    }
+      reasons: [
+        `Public data router connected: ${sourceSummary}.`,
+        `Current public-data market signal is ${publicData.marketSignal}/100 with ${publicData.confidence} confidence.`,
+        "No private OpenAI credential is required for this response path."
+      ],
+      risks: ["Public source counts are context signals, not hiring guarantees or salary promises."],
+      assumptions: ["Profile and route data were supplied by the client.", ...publicData.notes],
+      confidence: publicData.confidence
+    },
+    publicData
   };
 }
 
@@ -44,7 +56,7 @@ export async function handler(event) {
 
   const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey) {
-    return response(200, fallback(payload));
+    return response(200, await fallback(payload));
   }
 
   const input = [
@@ -86,9 +98,8 @@ export async function handler(event) {
 
     if (!upstream.ok) {
       return response(200, {
-        ...fallback(payload),
-        upstreamStatus: upstream.status,
-        mode: "LOCAL_SIMULATION_MODE"
+        ...(await fallback(payload)),
+        upstreamStatus: upstream.status
       });
     }
 
@@ -100,7 +111,7 @@ export async function handler(event) {
     });
   } catch (error) {
     return response(200, {
-      ...fallback(payload),
+      ...(await fallback(payload)),
       error: error instanceof Error ? error.message : "Unknown AI error"
     });
   }

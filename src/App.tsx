@@ -22,7 +22,7 @@ import {
   Upload,
   UserRound
 } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { CSSProperties, FormEvent, ReactNode } from "react";
 import { Link, NavLink, Route as RouterRoute, Routes, useLocation } from "react-router-dom";
 import { demoProfile } from "./data/demoProfile";
@@ -36,6 +36,7 @@ import {
   runCareerSimulation
 } from "./services/simulation";
 import { classifyEvidence, parseGitHubRepositoryUrl } from "./services/simulation/evidence";
+import { getPublicMarketSignal, summarizePublicSignal, type PublicMarketSignal } from "./services/market/publicMarketClient";
 import type { CareerConstraints, CareerProfile, CareerRoute, DecisionRecord, ShockScenario, SkillId } from "./types";
 
 const navItems = [
@@ -65,6 +66,7 @@ function App() {
   const [constraints, setConstraints] = useState<CareerConstraints>(demoProfile.constraints);
   const [shocks, setShocks] = useState<ShockScenario>({});
   const [decisions, setDecisions] = useState<DecisionRecord[]>([]);
+  const [publicSignal, setPublicSignal] = useState<PublicMarketSignal | null>(null);
   const simulation = useMemo(
     () =>
       runCareerSimulation(profile, {
@@ -76,7 +78,24 @@ function App() {
   );
   const topRoute = simulation.routes[0];
   const mission = useMemo(() => generateMission("cloud-deployment-evidence", profile), [profile]);
-  const appState = { profile, setProfile, constraints, setConstraints, shocks, setShocks, simulation, topRoute, mission, showcase, decisions, setDecisions };
+
+  useEffect(() => {
+    let active = true;
+
+    getPublicMarketSignal(topRoute.targetRole).then((signal) => {
+      if (active) {
+        setPublicSignal(signal);
+      }
+    });
+
+    return () => {
+      active = false;
+    };
+  }, [topRoute.targetRole]);
+
+  const appState = { profile, setProfile, constraints, setConstraints, shocks, setShocks, simulation, topRoute, mission, showcase, decisions, setDecisions, publicSignal };
+  const modeTitle = publicSignal?.mode === "PUBLIC_DATA_LIVE_MODE" ? "Live Public Data Mode" : publicSignal?.mode === "PUBLIC_DATA_DEGRADED_MODE" ? "Public Data Partial Mode" : "Public Data Router";
+  const modeSummary = publicSignal ? summarizePublicSignal(publicSignal) : "Connecting GitHub, OpenAlex, World Bank, and Data.gov resources.";
 
   return (
     <div className="app-shell">
@@ -100,8 +119,8 @@ function App() {
         <div className="mode-panel">
           <ShieldCheck size={18} aria-hidden="true" />
           <div>
-            <strong>Local Simulation Mode</strong>
-            <span>AI endpoint upgrades when server credentials are present.</span>
+            <strong>{modeTitle}</strong>
+            <span>{modeSummary}</span>
           </div>
         </div>
       </aside>
@@ -115,7 +134,7 @@ function App() {
           <RouterRoute path="/time-machine" element={<TimeMachinePage {...appState} />} />
           <RouterRoute path="/path-race" element={<PathRacePage {...appState} />} />
           <RouterRoute path="/evidence" element={<EvidencePage {...appState} />} />
-          <RouterRoute path="/api-finder" element={<ApiFinderPage />} />
+          <RouterRoute path="/api-finder" element={<ApiFinderPage publicSignal={publicSignal} />} />
           <RouterRoute path="/missions" element={<MissionsPage {...appState} />} />
           <RouterRoute path="/future-self" element={<FutureSelfPage {...appState} />} />
           <RouterRoute path="/decisions" element={<DecisionsPage {...appState} />} />
@@ -159,6 +178,7 @@ interface AppPageProps {
   showcase: boolean;
   decisions: DecisionRecord[];
   setDecisions: (decisions: DecisionRecord[]) => void;
+  publicSignal: PublicMarketSignal | null;
 }
 
 function withShowcase(path: string, showcase: boolean) {
@@ -303,7 +323,7 @@ function HomePage({ profile, topRoute, showcase }: AppPageProps) {
   );
 }
 
-function ApiFinderPage() {
+function ApiFinderPage({ publicSignal }: Pick<AppPageProps, "publicSignal">) {
   const [query, setQuery] = useState("career labor skills");
   const [auth, setAuth] = useState<OpenApiAuth | "all">("all");
   const [useCase, setUseCase] = useState<CareerApiUseCase>("market");
@@ -346,6 +366,7 @@ function ApiFinderPage() {
             ))}
           </div>
           <ApiSourceMap />
+          <PublicDataStatus signal={publicSignal} />
         </div>
         <div className="api-grid" aria-live="polite">
           {results.map((api, index) => (
@@ -383,6 +404,44 @@ function ApiFinderPage() {
         </div>
       </section>
     </>
+  );
+}
+
+function PublicDataStatus({ signal }: { signal: PublicMarketSignal | null }) {
+  const liveSources = signal?.sources.filter((source) => source.status === "live") ?? [];
+  const modeLabel =
+    signal?.mode === "PUBLIC_DATA_LIVE_MODE"
+      ? "Live public data"
+      : signal?.mode === "PUBLIC_DATA_DEGRADED_MODE"
+        ? "Partial public data"
+        : signal?.mode === "PUBLIC_DATA_OFFLINE_MODE"
+          ? "Public data offline"
+          : "Public data router";
+
+  return (
+    <section className="public-data-status" aria-label="Live public data status">
+      <div className="panel-title">
+        <Activity size={18} aria-hidden="true" />
+        <span>{modeLabel}</span>
+      </div>
+      <p>{signal ? summarizePublicSignal(signal) : "Connecting public resources through the Netlify market function."}</p>
+      {signal ? (
+        <>
+          <div className="signal-meter" aria-label={`Market signal ${signal.marketSignal} out of 100`}>
+            <span style={{ width: `${signal.marketSignal}%` }} />
+          </div>
+          <div className="source-status-list">
+            {signal.sources.map((source) => (
+              <div className={`source-status-row ${source.status}`} key={source.id}>
+                <strong>{source.name}</strong>
+                <span>{source.status === "live" ? source.signal : "Waiting for source response"}</span>
+              </div>
+            ))}
+            {liveSources.length === 0 ? <small>Live public resources will appear here once `/api/market` responds.</small> : null}
+          </div>
+        </>
+      ) : null}
+    </section>
   );
 }
 

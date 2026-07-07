@@ -27,8 +27,8 @@ export function unavailableSignal(roleId: RoleId, title: string, source: string)
     source,
     confidence: "low",
     notes: [
-      "Live market lookup requires a server-side adapter so credentials and series choices are not exposed to the browser.",
-      "The app falls back to deterministic local simulation when live credentials are unavailable."
+      "This specific credentialed adapter is unavailable in the current environment.",
+      "The default /api/market server-side path uses public data sources without exposing browser secrets."
     ],
     updatedAt: new Date(0).toISOString()
   };

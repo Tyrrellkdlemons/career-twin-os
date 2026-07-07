@@ -61,6 +61,8 @@ test("deep links survive direct navigation and mobile navigation is usable", asy
 test("API Finder surfaces open and official data sources", async ({ page }) => {
   await page.goto("/api-finder?showcase=1");
   await expect(page.getByRole("heading", { name: /open api finder/i })).toBeVisible();
+  await expect(page.getByLabel(/live public data status/i)).toBeVisible();
+  await expect(page.getByText(/local simulation mode/i)).toHaveCount(0);
   await page.getByLabel(/search apis/i).fill("labor skills");
   await expect(page.getByRole("heading", { name: /BLS Public Data API/i })).toBeVisible();
   await expect(page.getByRole("heading", { name: /O\*NET Web Services/i })).toBeVisible();

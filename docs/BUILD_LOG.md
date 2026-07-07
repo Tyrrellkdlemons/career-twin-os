@@ -24,6 +24,8 @@
 - Implemented Future Self reflective fallback.
 - Implemented Decision Journal and Career Replay.
 - Implemented Open API Finder with curated official/open API catalog.
+- Rewired `/api/market` into a live Public Data Router using GitHub, OpenAlex, World Bank, and Data.gov without private credentials.
+- Rewired `/api/ai` to return public-data assisted guidance when OpenAI credentials are absent.
 - Added high-motion visual layer: animated source field, route pulses, scanning maps, node energy, card entrances, and API source flow.
 
 ## Phase 4: Interface
@@ -36,7 +38,7 @@
 
 - `npm run lint`: passing.
 - `npm run typecheck`: passing.
-- `npm test`: 14 tests passing after API Finder expansion.
+- `npm test`: 19 tests passing after public-data router expansion.
 - `npm run build`: passing.
 - `npx playwright test`: 6 desktop/mobile tests passing.
 - `npm run verify`: passing.

@@ -14,8 +14,8 @@ export const localOccupationAdapter: MarketAdapter = {
       source: "local-fallback",
       confidence: "moderate",
       notes: [
-        "Deterministic local fallback derived from the product role catalog.",
-        "Use O*NET and BLS adapters for official data enrichment when server credentials and series choices are configured."
+        "Deterministic baseline derived from the product role catalog.",
+        "The deployed public-data router enriches this baseline with GitHub, OpenAlex, World Bank, and Data.gov signals."
       ],
       updatedAt: new Date(0).toISOString()
     };

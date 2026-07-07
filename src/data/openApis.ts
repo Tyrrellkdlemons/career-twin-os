@@ -128,15 +128,15 @@ export const openApiCatalog: OpenApiSource[] = [
     name: "Data.gov CKAN API",
     provider: "General Services Administration",
     docsUrl: "https://catalog.data.gov/dataset/data-gov-ckan-api",
-    baseUrl: "https://catalog.data.gov/api/3/",
+    baseUrl: "https://api.gsa.gov/technology/datagov/v3/",
     auth: "none",
     license: "Public metadata catalog",
     careerUseCases: ["research", "market", "education"],
     tags: ["open data", "metadata", "government datasets", "catalog", "ckan"],
     bestFor: ["Discovering datasets", "Finding official source candidates", "Research backlog generation"],
-    limitations: ["Catalog metadata only", "Dataset quality varies", "Actual data may live elsewhere"],
+    limitations: ["Catalog metadata only", "Dataset quality varies", "Production scale should use a dedicated api.data.gov key instead of the public DEMO_KEY"],
     disallowedUseCases: ["Scrape private job platforms", "Assume metadata equals data quality", "Bypass source-specific terms"],
-    integrationMode: "client-safe"
+    integrationMode: "server-side"
   }
 ];
 

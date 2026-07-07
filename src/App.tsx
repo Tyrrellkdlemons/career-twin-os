@@ -10,6 +10,7 @@ import {
   FileText,
   GitBranch,
   Home,
+  Layers3,
   Map,
   MessageSquare,
   Radar,
@@ -21,10 +22,12 @@ import {
   Upload,
   UserRound
 } from "lucide-react";
-import { FormEvent, ReactNode, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
+import type { CSSProperties, FormEvent, ReactNode } from "react";
 import { Link, NavLink, Route as RouterRoute, Routes, useLocation } from "react-router-dom";
 import { demoProfile } from "./data/demoProfile";
 import { roleCatalog, skillLabels } from "./data/occupations";
+import { findOpenApis, getApisByCareerUse, openApiCatalog, type CareerApiUseCase, type OpenApiAuth } from "./data/openApis";
 import {
   applyShockScenario,
   calculateReadiness,
@@ -40,6 +43,7 @@ const navItems = [
   { to: "/time-machine", label: "Time Machine", icon: GitBranch },
   { to: "/path-race", label: "Path Race", icon: Route },
   { to: "/evidence", label: "Evidence Map", icon: Radar },
+  { to: "/api-finder", label: "API Finder", icon: Layers3 },
   { to: "/missions", label: "Missions", icon: Target },
   { to: "/future-self", label: "Future Self", icon: MessageSquare },
   { to: "/decisions", label: "Decisions", icon: BookOpen },
@@ -76,6 +80,7 @@ function App() {
 
   return (
     <div className="app-shell">
+      <MotionBackdrop />
       <aside className="sidebar" aria-label="Primary">
         <Link className="brand" to={withShowcase("/", showcase)}>
           <span className="brand-mark">CT</span>
@@ -110,6 +115,7 @@ function App() {
           <RouterRoute path="/time-machine" element={<TimeMachinePage {...appState} />} />
           <RouterRoute path="/path-race" element={<PathRacePage {...appState} />} />
           <RouterRoute path="/evidence" element={<EvidencePage {...appState} />} />
+          <RouterRoute path="/api-finder" element={<ApiFinderPage />} />
           <RouterRoute path="/missions" element={<MissionsPage {...appState} />} />
           <RouterRoute path="/future-self" element={<FutureSelfPage {...appState} />} />
           <RouterRoute path="/decisions" element={<DecisionsPage {...appState} />} />
@@ -126,6 +132,16 @@ function App() {
           </NavLink>
         ))}
       </nav>
+    </div>
+  );
+}
+
+function MotionBackdrop() {
+  return (
+    <div className="motion-field" aria-hidden="true">
+      {Array.from({ length: 10 }, (_, index) => (
+        <span key={index} style={{ "--i": index } as CSSProperties} />
+      ))}
     </div>
   );
 }
@@ -273,6 +289,7 @@ function HomePage({ profile, topRoute, showcase }: AppPageProps) {
         {[
           ["Career Time Machine", "Branching temporal map across 6, 12, 24, and 36 months."],
           ["Career Physics", "Constraints change routes, scores, effort, and bottlenecks."],
+          ["Open API Finder", "Official and open data sources mapped to simulation use cases."],
           ["Proof Missions", "Skill gaps become portfolio artifacts with acceptance criteria."],
           ["Future Self", "Reflective simulation grounded in the selected path."]
         ].map(([title, body]) => (
@@ -283,6 +300,104 @@ function HomePage({ profile, topRoute, showcase }: AppPageProps) {
         ))}
       </section>
     </section>
+  );
+}
+
+function ApiFinderPage() {
+  const [query, setQuery] = useState("career labor skills");
+  const [auth, setAuth] = useState<OpenApiAuth | "all">("all");
+  const [useCase, setUseCase] = useState<CareerApiUseCase>("market");
+  const results = useMemo(() => {
+    const filters = auth === "all" ? { useCase } : { auth, useCase };
+    const found = findOpenApis(query, filters);
+    return found.length ? found : auth === "all" ? getApisByCareerUse(useCase) : openApiCatalog.filter((api) => api.auth === auth);
+  }, [auth, query, useCase]);
+
+  return (
+    <>
+      <PageHeader eyebrow="Open Source API Discovery" title="Open API Finder" icon={<Layers3 size={42} />}>
+        Find official, open, or free-key data sources that can enrich simulations without scraping private job platforms or exposing secrets in the browser.
+      </PageHeader>
+      <section className="api-finder-layout">
+        <div className="work-panel api-controls">
+          <label>
+            Search APIs
+            <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="labor skills, portfolio evidence, education cost" />
+          </label>
+          <div className="segmented-row" role="group" aria-label="Authentication filter">
+            <button className={auth === "all" ? "selected" : ""} type="button" onClick={() => setAuth("all")}>
+              All APIs
+            </button>
+            <button className={auth === "none" ? "selected" : ""} type="button" onClick={() => setAuth("none")}>
+              No-key only
+            </button>
+            <button className={auth === "free-key" ? "selected" : ""} type="button" onClick={() => setAuth("free-key")}>
+              Free-key
+            </button>
+            <button className={auth === "registered" ? "selected" : ""} type="button" onClick={() => setAuth("registered")}>
+              Registered
+            </button>
+          </div>
+          <div className="usecase-grid" role="group" aria-label="Career use case">
+            {(["market", "occupation", "skills", "evidence", "education", "research", "jobs", "macro"] as CareerApiUseCase[]).map((item) => (
+              <button className={useCase === item ? "selected" : ""} key={item} type="button" onClick={() => setUseCase(item)}>
+                {titleCase(item)}
+              </button>
+            ))}
+          </div>
+          <ApiSourceMap />
+        </div>
+        <div className="api-grid" aria-live="polite">
+          {results.map((api, index) => (
+            <article className="api-card" key={api.id} style={{ "--delay": `${index * 80}ms` } as CSSProperties}>
+              <div className="api-card-top">
+                <span>{api.provider}</span>
+                <strong>{api.auth === "none" ? "No key" : api.auth === "free-key" ? "Free key" : "Registered"}</strong>
+              </div>
+              <h2>{api.name}</h2>
+              <p>{api.bestFor[0]}</p>
+              <dl>
+                <div>
+                  <dt>Use cases</dt>
+                  <dd>{api.careerUseCases.join(", ")}</dd>
+                </div>
+                <div>
+                  <dt>Integration</dt>
+                  <dd>{api.integrationMode}</dd>
+                </div>
+                <div>
+                  <dt>Base URL</dt>
+                  <dd>{api.baseUrl}</dd>
+                </div>
+              </dl>
+              <ul>
+                {api.limitations.slice(0, 2).map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
+              <a className="secondary-action" href={api.docsUrl} target="_blank" rel="noreferrer">
+                Open docs <ArrowRight size={16} aria-hidden="true" />
+              </a>
+            </article>
+          ))}
+        </div>
+      </section>
+    </>
+  );
+}
+
+function ApiSourceMap() {
+  return (
+    <svg className="api-source-map" viewBox="0 0 520 240" role="img" aria-label="Open APIs feed the simulation engine through a source router">
+      <path className="route-line primary api-flow" d="M50 60 C160 35 235 70 330 55 S450 48 490 78" />
+      <path className="route-line violet api-flow" d="M50 120 C155 118 238 118 330 120 S455 126 490 110" />
+      <path className="route-line amber api-flow" d="M50 180 C160 205 245 170 330 190 S450 182 490 158" />
+      <GraphNode x={56} y={60} label="Labor" kind="role" />
+      <GraphNode x={56} y={120} label="Evidence" kind="evidence" />
+      <GraphNode x={56} y={180} label="Education" kind="skill" />
+      <GraphNode x={288} y={120} label="Source router" kind="opportunity" />
+      <GraphNode x={470} y={120} label="Simulation" kind="evidence" />
+    </svg>
   );
 }
 

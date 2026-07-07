@@ -36,6 +36,51 @@ body {
   color: var(--text);
 }
 
+.motion-field {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  background:
+    linear-gradient(90deg, transparent 0 48%, rgba(57, 212, 194, 0.09) 49%, transparent 51%),
+    repeating-linear-gradient(115deg, rgba(255, 255, 255, 0.035) 0 1px, transparent 1px 34px);
+  mask-image: linear-gradient(180deg, transparent, black 12%, black 88%, transparent);
+  animation: fieldShift 18s linear infinite;
+}
+
+.motion-field::before,
+.motion-field::after {
+  content: "";
+  position: absolute;
+  inset: -20% -10%;
+  background:
+    repeating-linear-gradient(90deg, transparent 0 86px, rgba(246, 200, 95, 0.1) 88px, transparent 92px),
+    repeating-linear-gradient(0deg, transparent 0 74px, rgba(176, 140, 255, 0.08) 76px, transparent 80px);
+  transform: rotate(-8deg);
+  animation: scanLattice 14s ease-in-out infinite alternate;
+}
+
+.motion-field::after {
+  background: linear-gradient(90deg, transparent, rgba(123, 185, 255, 0.12), transparent);
+  width: 42%;
+  inset: 0 auto 0 -45%;
+  transform: none;
+  animation: sourceSweep 7s cubic-bezier(0.75, 0, 0.25, 1) infinite;
+}
+
+.motion-field span {
+  position: absolute;
+  left: calc((var(--i) * 11%) - 8%);
+  top: -10%;
+  width: 2px;
+  height: 120%;
+  background: linear-gradient(180deg, transparent, rgba(57, 212, 194, 0.28), transparent);
+  transform: rotate(24deg);
+  animation: signalDrop calc(5s + var(--i) * 0.35s) linear infinite;
+  animation-delay: calc(var(--i) * -0.42s);
+}
+
 button,
 input,
 textarea {
@@ -55,6 +100,14 @@ a {
   display: grid;
   grid-template-columns: 280px minmax(0, 1fr);
   min-height: 100vh;
+  isolation: isolate;
+}
+
+.sidebar,
+.main-surface,
+.mobile-nav {
+  position: relative;
+  z-index: 1;
 }
 
 .sidebar {
@@ -87,6 +140,7 @@ a {
   background: #0f2025;
   color: var(--teal);
   font-weight: 800;
+  animation: markPulse 3.8s ease-in-out infinite;
 }
 
 .brand strong,
@@ -160,6 +214,12 @@ a {
   font-size: clamp(2.3rem, 5vw, 5rem);
   line-height: 0.95;
   letter-spacing: 0;
+  background: linear-gradient(90deg, var(--text), var(--teal), var(--gold), var(--violet), var(--text));
+  background-size: 260% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: prismText 9s linear infinite;
 }
 
 .page-header p,
@@ -262,13 +322,15 @@ button {
 .route-card,
 .mission-brief {
   border: 1px solid var(--line);
-  background: rgba(17, 25, 35, 0.78);
+  background: rgba(12, 18, 25, 0.94);
+  backdrop-filter: blur(14px);
   box-shadow: var(--shadow);
   border-radius: 8px;
 }
 
 .timeline-panel {
   padding: 18px;
+  animation: surfaceRise 700ms ease both;
 }
 
 .panel-title {
@@ -299,6 +361,11 @@ svg text {
   fill: none;
   stroke-width: 4;
   stroke-linecap: round;
+}
+
+.route-line {
+  stroke-dasharray: 16 18;
+  animation: routeTravel 2.8s linear infinite;
 }
 
 .topo-line {
@@ -341,6 +408,7 @@ svg text {
 .node.evidence {
   fill: #123321;
   stroke: var(--green);
+  animation: nodePulse 2.6s ease-in-out infinite;
 }
 
 .node.alt,
@@ -434,6 +502,7 @@ a:focus-visible {
 .mission-brief,
 .work-panel {
   padding: 18px;
+  animation: surfaceRise 620ms ease both;
 }
 
 .feature-card h2,
@@ -483,7 +552,7 @@ a:focus-visible {
   background:
     linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
-    rgba(6, 10, 14, 0.7);
+    rgba(6, 10, 14, 0.84);
   background-size: 38px 38px;
   border-radius: 8px;
 }
@@ -586,18 +655,22 @@ legend {
 
 .route-card.fastest {
   border-color: rgba(57, 212, 194, 0.45);
+  animation-delay: 60ms;
 }
 
 .route-card.lowest-cost {
   border-color: rgba(141, 226, 127, 0.38);
+  animation-delay: 120ms;
 }
 
 .route-card.highest-upside {
   border-color: rgba(176, 140, 255, 0.45);
+  animation-delay: 180ms;
 }
 
 .route-card.balanced {
   border-color: rgba(246, 200, 95, 0.42);
+  animation-delay: 240ms;
 }
 
 .route-facts span {
@@ -629,6 +702,8 @@ legend {
 .score-track div {
   height: 100%;
   background: linear-gradient(90deg, var(--teal), var(--gold));
+  background-size: 220% 100%;
+  animation: meterFlow 2.4s linear infinite;
 }
 
 details summary {
@@ -666,6 +741,18 @@ details summary {
   border: 1px solid var(--line);
   background: rgba(255, 255, 255, 0.04);
   border-radius: 8px;
+  position: relative;
+  overflow: hidden;
+  animation: surfaceRise 520ms ease both;
+}
+
+.race-lane::after {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 -40%;
+  width: 34%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.16), transparent);
+  animation: sourceSweep 4.8s ease-in-out infinite;
 }
 
 .race-lane h2,
@@ -695,6 +782,136 @@ details summary {
   padding-right: 8px;
   color: #03100f;
   font-weight: 900;
+  animation: finishPulse 2.2s ease-in-out infinite;
+}
+
+.api-finder-layout {
+  display: grid;
+  grid-template-columns: 340px minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.api-controls {
+  position: sticky;
+  top: 20px;
+}
+
+.segmented-row,
+.usecase-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.segmented-row button,
+.usecase-grid button {
+  min-height: 36px;
+  padding: 8px 10px;
+}
+
+.segmented-row .selected,
+.usecase-grid .selected {
+  background: var(--gold);
+  color: #1b1304;
+  border-color: var(--gold);
+  font-weight: 900;
+}
+
+.api-source-map {
+  width: 100%;
+  margin-top: 16px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background:
+    linear-gradient(135deg, rgba(57, 212, 194, 0.08), transparent),
+    rgba(0, 0, 0, 0.18);
+}
+
+.api-source-map text {
+  font-size: 15px;
+}
+
+.api-flow {
+  animation-duration: 1.8s;
+}
+
+.api-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.api-card {
+  position: relative;
+  overflow: hidden;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background:
+    linear-gradient(135deg, rgba(123, 185, 255, 0.08), transparent 42%),
+    rgba(17, 25, 35, 0.86);
+  box-shadow: var(--shadow);
+  animation: apiCardIn 680ms ease both;
+  animation-delay: var(--delay);
+}
+
+.api-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, transparent 0 35%, rgba(57, 212, 194, 0.12), transparent 65% 100%);
+  transform: translateX(-120%);
+  animation: sourceSweep 5.6s ease-in-out infinite;
+  animation-delay: var(--delay);
+}
+
+.api-card > * {
+  position: relative;
+}
+
+.api-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.api-card-top span,
+.api-card-top strong {
+  color: var(--teal);
+  font-size: 0.76rem;
+  text-transform: uppercase;
+  font-weight: 900;
+}
+
+.api-card h2 {
+  margin: 12px 0 8px;
+  font-size: clamp(1.2rem, 2vw, 1.75rem);
+}
+
+.api-card dl {
+  display: grid;
+  gap: 8px;
+  margin: 14px 0;
+}
+
+.api-card dl div {
+  display: grid;
+  grid-template-columns: 92px minmax(0, 1fr);
+  gap: 10px;
+}
+
+.api-card dt {
+  color: var(--gold);
+  font-weight: 900;
+}
+
+.api-card dd {
+  margin: 0;
+  color: var(--muted);
+  overflow-wrap: anywhere;
 }
 
 .evidence-list {
@@ -861,7 +1078,8 @@ pre {
   .feature-strip,
   .metrics-grid,
   .route-grid,
-  .sim-controls {
+  .sim-controls,
+  .api-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
@@ -915,8 +1133,14 @@ pre {
   .metrics-grid,
   .route-grid,
   .sim-controls,
-  .future-room {
+  .future-room,
+  .api-finder-layout,
+  .api-grid {
     grid-template-columns: 1fr;
+  }
+
+  .api-controls {
+    position: static;
   }
 
   .graph-stage {
@@ -947,5 +1171,120 @@ pre {
 
   .score-row {
     grid-template-columns: 92px minmax(0, 1fr) 34px;
+  }
+}
+
+@keyframes fieldShift {
+  from {
+    background-position: 0 0, 0 0;
+  }
+  to {
+    background-position: 280px 0, 360px 0;
+  }
+}
+
+@keyframes scanLattice {
+  from {
+    transform: translateY(-3%) rotate(-8deg);
+    opacity: 0.55;
+  }
+  to {
+    transform: translateY(3%) rotate(-8deg);
+    opacity: 0.85;
+  }
+}
+
+@keyframes sourceSweep {
+  0% {
+    transform: translateX(-120%);
+  }
+  48%,
+  100% {
+    transform: translateX(330%);
+  }
+}
+
+@keyframes signalDrop {
+  from {
+    transform: translateY(-22%) rotate(24deg);
+  }
+  to {
+    transform: translateY(22%) rotate(24deg);
+  }
+}
+
+@keyframes markPulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 rgba(57, 212, 194, 0);
+  }
+  50% {
+    box-shadow: 0 0 28px rgba(57, 212, 194, 0.28);
+  }
+}
+
+@keyframes prismText {
+  from {
+    background-position: 0 50%;
+  }
+  to {
+    background-position: 260% 50%;
+  }
+}
+
+@keyframes routeTravel {
+  to {
+    stroke-dashoffset: -68;
+  }
+}
+
+@keyframes nodePulse {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 0 rgba(141, 226, 127, 0));
+  }
+  50% {
+    filter: drop-shadow(0 0 16px rgba(141, 226, 127, 0.55));
+  }
+}
+
+@keyframes surfaceRise {
+  from {
+    transform: translateY(16px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes meterFlow {
+  from {
+    background-position: 0 50%;
+  }
+  to {
+    background-position: 220% 50%;
+  }
+}
+
+@keyframes finishPulse {
+  0%,
+  100% {
+    filter: saturate(1);
+  }
+  50% {
+    filter: saturate(1.6) brightness(1.08);
+  }
+}
+
+@keyframes apiCardIn {
+  from {
+    transform: translateY(18px) scale(0.98);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
   }
 }

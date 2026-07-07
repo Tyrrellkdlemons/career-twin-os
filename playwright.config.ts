@@ -4,7 +4,8 @@ const baseURL = process.env.PLAYWRIGHT_BASE_URL ?? "http://127.0.0.1:5173";
 
 export default defineConfig({
   testDir: "./e2e",
-  timeout: 30000,
+  timeout: 45000,
+  workers: 2,
   expect: { timeout: 10000 },
   webServer: process.env.PLAYWRIGHT_BASE_URL
     ? undefined

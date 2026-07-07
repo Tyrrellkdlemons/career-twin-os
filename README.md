@@ -22,13 +22,14 @@ Most career tools optimize for static advice: resumes, job matches, generic cour
 - Twin Council structured agent debate.
 - Future Self reflective simulation.
 - Decision Journal and Career Replay.
+- Open API Finder for official/open data source candidates.
 
 ## Core features
 
 - Demo guest mode with fictional Jordan Rivera profile.
 - Twin onboarding with resume-text draft extraction.
 - Deterministic path generation and seeded uncertainty bands.
-- Interactive Time Machine, Path Race, Evidence Map, Missions, Future Self, Decisions, Profile, and Replay routes.
+- Interactive Time Machine, Path Race, Evidence Map, API Finder, Missions, Future Self, Decisions, Profile, and Replay routes.
 - Showcase mode at `?showcase=1`.
 
 ## How AI is used
@@ -48,6 +49,12 @@ Official-source adapters are prepared for:
 
 - O*NET Web Services: https://services.onetcenter.org/reference/
 - BLS Public Data API: https://www.bls.gov/developers/
+- GitHub REST API: https://docs.github.com/rest
+- College Scorecard API: https://collegescorecard.ed.gov/data/api-documentation/
+- OpenAlex API: https://developers.openalex.org/api-reference/introduction
+- World Bank Indicators API: https://datahelpdesk.worldbank.org/knowledgebase/articles/889392-about-the-indicators-api-documentation
+- USAJOBS API: https://developer.usajobs.gov/api-reference/
+- Data.gov CKAN API: https://catalog.data.gov/dataset/data-gov-ckan-api
 
 Live enrichment is intentionally server-side. The browser never receives O*NET, BLS, or OpenAI secrets.
 

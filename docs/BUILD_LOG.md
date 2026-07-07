@@ -23,6 +23,8 @@
 - Implemented Twin Council structured outputs.
 - Implemented Future Self reflective fallback.
 - Implemented Decision Journal and Career Replay.
+- Implemented Open API Finder with curated official/open API catalog.
+- Added high-motion visual layer: animated source field, route pulses, scanning maps, node energy, card entrances, and API source flow.
 
 ## Phase 4: Interface
 
@@ -34,7 +36,7 @@
 
 - `npm run lint`: passing.
 - `npm run typecheck`: passing.
-- `npm test`: 11 tests passing.
+- `npm test`: 14 tests passing after API Finder expansion.
 - `npm run build`: passing.
 - `npx playwright test`: 6 desktop/mobile tests passing.
 - `npm run verify`: passing.

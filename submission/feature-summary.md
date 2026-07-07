@@ -6,9 +6,11 @@
 - Future Shock Lab.
 - Path Race route comparison.
 - Evidence Graph with claim labels.
+- Open API Finder with official/open sources, credential expectations, integration mode, and limitations.
 - Proof Missions with Codex build brief.
 - Twin Council structured debate.
 - Future Self reflective simulation.
 - Decision Journal and Career Replay.
 - Local Simulation Mode fallback.
 - Optional AI and market-data server functions.
+- Heavier motion system with animated source ribbons, route pulses, card entrances, and reduced-motion fallback.
